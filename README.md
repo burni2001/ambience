@@ -4,6 +4,12 @@
 
 > **Disclaimer:** This project is an independent open-source tool and is not affiliated with, endorsed, or sponsored by Koninklijke Philips N.V., Signify Holding, or TP Vision. "Philips", "Ambilight", "Philips Hue" and "Hue" are trademarks of their respective owners and are used here only to describe what the app works with.
 
+## Screenshots
+
+| Main screen | Settings |
+|---|---|
+| ![Main screen with brightness, reaction, on/off button and entertainment area](docs/main.png) | ![Settings overlay](docs/settings.png) |
+
 ## How it works
 
 - Ambience runs **on the TV itself** as a foreground service.
