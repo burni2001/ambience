@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/banner.png" alt="Ambience app tile" width="480"></p>
+
 # Ambience
 
 **Sync Ambilight to your Hue lights.** Ambience is a small Android TV app that runs on a Philips Ambilight TV and mirrors the TV's Ambilight colours onto the lamps of a Hue entertainment area in real time.
