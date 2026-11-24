@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tv.ambience.sync">
+
+    <!-- TV-API (127.0.0.1:1926), Hue-Bridge im Heimnetz und adb-Dienst des TVs (127.0.0.1:5555, Wächter). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Der API-Dienst des TVs muss für die Bindung sichtbar sein (siehe ApiKeeper). -->
+    <queries>
+        <package android:name="org.droidtv.xtv" />
+    </queries>
+
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!-- debuggable: nur so lässt sich die Datei mit den Zugangsdaten per „adb run-as“ ablegen. -->
+    <application
+        android:label="Ambience"
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@drawable/banner"
+        android:allowBackup="false"
+        android:debuggable="true">
+
+        <!-- Zustand ansehen und an/aus schalten, im Stil des App Switchers. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Untermenü: das Log der App. -->
+        <activity
+            android:name=".LogActivity"
+            android:label="Log"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+
+        <!-- Einstellungen als Overlay über der Hauptseite (seit 1.9.8), wirken sofort. -->
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings"
+            android:exported="false"
+            android:theme="@style/Overlay" />
+
+        <!-- Untermenü: Einrichtung (TV koppeln, Bridge, Bereich, Weißabgleich, Wächter), seit 1.9.0. -->
+        <activity
+            android:name=".SetupActivity"
+            android:label="Setup"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+
+        <!-- Schalten ohne Oberfläche, für eine Taste oder adb. -->
+        <activity
+            android:name=".ControlActivity"
+            android:label="Ambience control"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="tv.ambience.sync.AMBILIGHT" />
+                <action android:name="tv.ambience.sync.TOGGLE" />
+                <action android:name="tv.ambience.sync.NEXT_AREA" />
+                <action android:name="tv.ambience.sync.ON" />
+                <action android:name="tv.ambience.sync.OFF" />
+                <action android:name="tv.ambience.sync.RELOAD" />
+                <action android:name="tv.ambience.sync.TLSTEST" />
+                <action android:name="tv.ambience.sync.ADBSETUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".SyncService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Continuously transfers the TV Ambilight colours to Hue lamps." />
+        </service>
+
+        <!-- Schalten per Broadcast, für tvQuickActions (Intent → Broadcast receiver). Startet keine Aktivität. -->
+        <receiver
+            android:name=".ControlReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="tv.ambience.sync.AMBILIGHT" />
+                <action android:name="tv.ambience.sync.TOGGLE" />
+                <action android:name="tv.ambience.sync.NEXT_AREA" />
+                <action android:name="tv.ambience.sync.ON" />
+                <action android:name="tv.ambience.sync.OFF" />
+                <action android:name="tv.ambience.sync.RELOAD" />
+                <action android:name="tv.ambience.sync.FADETEST" />
+                <action android:name="tv.ambience.sync.STATE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

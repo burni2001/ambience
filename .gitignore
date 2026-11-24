@@ -1,0 +1,15 @@
+# Build output
+build/
+*.profraw
+
+# Signing key and credentials stay local
+*.keystore
+*.jks
+*.env
+*.conf
+local.properties
+
+# Design drafts
+icon-entwuerfe/
+
+.DS_Store
